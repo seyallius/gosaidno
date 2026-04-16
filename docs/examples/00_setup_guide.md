@@ -21,83 +21,84 @@ myproject/
 package aop
 
 import (
-    "log"
-    "time"
-    "github.com/seyallius/gosaidsno/aspect"
+	"log"
+	"time"
+
+	"github.com/seyallius/gosaidno/aspect"
 )
 
 // InitAOP registers all functions and advice at application startup.
 func InitAOP() {
-    setupLogging()
-    setupTiming()
-    setupErrorHandling()
-    log.Println("[AOP] Initialization complete")
+	setupLogging()
+	setupTiming()
+	setupErrorHandling()
+	log.Println("[AOP] Initialization complete")
 }
 
 func setupLogging() {
-    // Register functions that need logging
-    aspect.MustRegister("UserService.GetUser")
-    aspect.MustRegister("UserService.CreateUser")
-    aspect.MustRegister("PaymentService.ProcessPayment")
-    
-    // Add Before advice for all
-    for _, funcName := range []string{
-        "UserService.GetUser",
-        "UserService.CreateUser", 
-        "PaymentService.ProcessPayment",
-    } {
-        aspect.MustAddAdvice(funcName, aspect.Advice{
-            Type: aspect.Before,
-            Priority: 100,
-            Handler: func(c *aspect.Context) error {
-                log.Printf("[BEFORE] %s called with args: %v", c.FunctionName, c.Args)
-                return nil
-            },
-        })
-    }
+	// Register functions that need logging
+	aspect.MustRegister("UserService.GetUser")
+	aspect.MustRegister("UserService.CreateUser")
+	aspect.MustRegister("PaymentService.ProcessPayment")
+
+	// Add Before advice for all
+	for _, funcName := range []string{
+		"UserService.GetUser",
+		"UserService.CreateUser",
+		"PaymentService.ProcessPayment",
+	} {
+		aspect.MustAddAdvice(funcName, aspect.Advice{
+			Type:     aspect.Before,
+			Priority: 100,
+			Handler: func(c *aspect.Context) error {
+				log.Printf("[BEFORE] %s called with args: %v", c.FunctionName, c.Args)
+				return nil
+			},
+		})
+	}
 }
 
 func setupTiming() {
-    // Functions to time
-    funcs := []string{"UserService.GetUser", "PaymentService.ProcessPayment"}
-    
-    for _, funcName := range funcs {
-        // Before: capture start time
-        aspect.MustAddAdvice(funcName, aspect.Advice{
-            Type: aspect.Before,
-            Priority: 90,
-            Handler: func(c *aspect.Context) error {
-                c.Metadata["startTime"] = time.Now()
-                return nil
-            },
-        })
-        
-        // After: log duration
-        aspect.MustAddAdvice(funcName, aspect.Advice{
-            Type: aspect.After,
-            Priority: 90,
-            Handler: func(c *aspect.Context) error {
-                start := c.Metadata["startTime"].(time.Time)
-                log.Printf("[TIMING] %s took %v", c.FunctionName, time.Since(start))
-                return nil
-            },
-        })
-    }
+	// Functions to time
+	funcs := []string{"UserService.GetUser", "PaymentService.ProcessPayment"}
+
+	for _, funcName := range funcs {
+		// Before: capture start time
+		aspect.MustAddAdvice(funcName, aspect.Advice{
+			Type:     aspect.Before,
+			Priority: 90,
+			Handler: func(c *aspect.Context) error {
+				c.Metadata["startTime"] = time.Now()
+				return nil
+			},
+		})
+
+		// After: log duration
+		aspect.MustAddAdvice(funcName, aspect.Advice{
+			Type:     aspect.After,
+			Priority: 90,
+			Handler: func(c *aspect.Context) error {
+				start := c.Metadata["startTime"].(time.Time)
+				log.Printf("[TIMING] %s took %v", c.FunctionName, time.Since(start))
+				return nil
+			},
+		})
+	}
 }
 
 func setupErrorHandling() {
-    // Add AfterThrowing for all registered functions
-    for _, funcName := range aspect.ListRegistered() {
-        aspect.MustAddAdvice(funcName, aspect.Advice{
-            Type: aspect.AfterThrowing,
-            Priority: 100,
-            Handler: func(c *aspect.Context) error {
-                log.Printf("[PANIC] %s panicked: %v", c.FunctionName, c.PanicValue)
-                // Send alert, record metric, etc.
-                return nil
-            },
-        })
-    }
+	// Add AfterThrowing for all registered functions
+	for _, funcName := range aspect.ListRegistered() {
+		aspect.MustAddAdvice(funcName, aspect.Advice{
+			Type:     aspect.AfterThrowing,
+			Priority: 100,
+			Handler: func(c *aspect.Context) error {
+				log.Printf("[PANIC] %s panicked: %v", c.FunctionName, c.PanicValue)
+				// Send alert, record metric, etc.
+				return nil
+			},
+		})
+	}
 }
 ```
 
@@ -127,7 +128,7 @@ func main() {
 ```go
 package services
 
-import "github.com/seyallius/gosaidsno/aspect"
+import "github.com/seyallius/gosaidno/aspect"
 
 type UserService struct {
     getUser func(string) (*User, error)

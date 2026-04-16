@@ -21,7 +21,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/seyallius/gosaidsno/aspect"
+    "github.com/seyallius/gosaidno/aspect"
 )
 
 func main() {
@@ -133,7 +133,7 @@ import (
     "math"
     "time"
 
-    "github.com/seyallius/gosaidsno/aspect"
+    "github.com/seyallius/gosaidno/aspect"
 )
 
 func main() {
@@ -206,7 +206,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/seyallius/gosaidsno/aspect"
+    "github.com/seyallius/gosaidno/aspect"
 )
 
 func main() {

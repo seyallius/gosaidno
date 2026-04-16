@@ -352,7 +352,7 @@ Set up all your AOP configuration in one place, typically during application ini
 // aop/setup.go
 package aop
 
-import "github.com/seyallius/gosaidsno/aspect"
+import "github.com/seyallius/gosaidno/aspect"
 
 func Init() {
     setupLogging()
@@ -566,9 +566,7 @@ Here's a complete example using the fluent API:
 ```go
 package main
 
-import (
-    "github.com/seyallius/gosaidsno/aspect"
-)
+import "github.com/seyallius/gosaidno/aspect"
 
 func main() {
     // Configure advice using fluent API
