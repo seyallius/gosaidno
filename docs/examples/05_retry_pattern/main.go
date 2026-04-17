@@ -8,8 +8,9 @@ import (
 	"math"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
-	"github.com/seyallius/gosaidno/docs/examples/utils"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
+	"github.com/seyallius/gosaidno/v2/docs/examples/utils"
 )
 
 // -------------------------------------------- Retry Wrapper --------------------------------------------
@@ -189,7 +190,7 @@ func SendEmail(to, subject string) error {
 	return err
 }
 
-var sendEmailBase = aspect.Wrap2E(registry, "SendEmail", sendEmailImpl)
+var sendEmailBase = wrap.Wrap2E(registry, "SendEmail", sendEmailImpl)
 
 // ProcessPayment with retry wrapper
 func ProcessPayment(amount float64, cardToken string) (string, error) {
@@ -211,7 +212,7 @@ func ProcessPayment(amount float64, cardToken string) (string, error) {
 	return result, err
 }
 
-var processPaymentBase = aspect.Wrap2RE(registry, "ProcessPayment", processPaymentImpl)
+var processPaymentBase = wrap.Wrap2RE(registry, "ProcessPayment", processPaymentImpl)
 
 // -------------------------------------------- Examples --------------------------------------------
 

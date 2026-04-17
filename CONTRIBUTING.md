@@ -1,4 +1,4 @@
-# Contributing to gosaidsno
+# Contributing to gosaidno
 
 Thanks for your interest in contributing! 🎉
 
@@ -212,7 +212,7 @@ test(advice): add test for priority ordering
 ## Project Structure
 
 ```
-gosaidsno/
+gosaidno/
 ├── aspect/              # Core library code
 │   ├── advice.go        # Advice types & chain
 │   ├── context.go       # Execution context
@@ -241,8 +241,8 @@ gosaidsno/
 
 2. **Clone the repo:**
    ```bash
-   git clone https://github.com/yourusername/gosaidsno.git
-   cd gosaidsno
+   git clone https://github.com/yourusername/gosaidno.git
+   cd gosaidno
    ```
 
 3. **Install dev tools:**
@@ -277,4 +277,4 @@ gosaidsno/
 
 ---
 
-**Thanks for contributing to gosaidsno!** 🚀
+**Thanks for contributing to gosaidno!** 🚀

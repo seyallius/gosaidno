@@ -1,6 +1,6 @@
 # Performance Considerations
 
-Understanding the performance implications of using gosaidsno helps you make informed decisions about when and how to use it effectively in your applications.
+Understanding the performance implications of using gosaidno helps you make informed decisions about when and how to use it effectively in your applications.
 
 ## Time Complexity Analysis
 
@@ -108,7 +108,7 @@ Profile advice execution time:
 
 ## Benchmarking Considerations
 
-When benchmarking code that uses gosaidsno:
+When benchmarking code that uses gosaidno:
 
 ```go
 func BenchmarkWithAOP(b *testing.B) {
@@ -116,7 +116,7 @@ func BenchmarkWithAOP(b *testing.B) {
     aspect.MustRegister("BenchmarkFunc")
     aspect.MustAddAdvice("BenchmarkFunc", loggingAdvice())
     
-    wrappedFunc := aspect.Wrap0("BenchmarkFunc", func() { /* work */ })
+    wrappedFunc := wrap.Wrap0("BenchmarkFunc", func() { /* work */ })
     
     b.ResetTimer()
     for i := 0; i < b.N; i++ {

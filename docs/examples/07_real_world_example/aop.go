@@ -5,8 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
-	"github.com/seyallius/gosaidno/docs/examples/utils"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
+	"github.com/seyallius/gosaidno/v2/docs/examples/utils"
 )
 
 // -------------------------------------------- AOP Setup (Centralized) --------------------------------------------
@@ -239,7 +240,7 @@ var (
 	// UserService wrapped functions
 	UserServiceGetUser = func(username string) (*User, error) {
 		builder := aspect.For("UserService.GetUser")
-		return aspect.Wrap1RE[string, *User](
+		return wrap.Wrap1RE[string, *User](
 			builder.GetRegistry(),
 			builder.GetFuncKey(),
 			userServiceInstance.GetUser,
@@ -248,7 +249,7 @@ var (
 
 	UserServiceCreateUser = func(user *User) error {
 		builder := aspect.For("UserService.CreateUser")
-		return aspect.Wrap1E[*User](
+		return wrap.Wrap1E[*User](
 			builder.GetRegistry(),
 			builder.GetFuncKey(),
 			userServiceInstance.CreateUser,
@@ -258,7 +259,7 @@ var (
 	// OrderService wrapped functions
 	OrderServiceCreateOrder = func(userID string, amount float64) (*Order, error) {
 		builder := aspect.For("OrderService.CreateOrder")
-		return aspect.Wrap2RE[string, float64, *Order](
+		return wrap.Wrap2RE[string, float64, *Order](
 			builder.GetRegistry(),
 			builder.GetFuncKey(),
 			orderServiceInstance.CreateOrder,
@@ -267,7 +268,7 @@ var (
 
 	OrderServiceGetOrder = func(orderID string) (*Order, error) {
 		builder := aspect.For("OrderService.GetOrder")
-		return aspect.Wrap1RE[string, *Order](
+		return wrap.Wrap1RE[string, *Order](
 			builder.GetRegistry(),
 			builder.GetFuncKey(),
 			orderServiceInstance.GetOrder,
@@ -298,7 +299,7 @@ func NewWrappedServices() *WrappedServices {
 		UserService: &WrappedUserService{
 			GetUser: func(username string) (*User, error) {
 				builder := aspect.For("UserService.GetUser")
-				return aspect.Wrap1RE[string, *User](
+				return wrap.Wrap1RE[string, *User](
 					builder.GetRegistry(),
 					builder.GetFuncKey(),
 					userServiceInstance.GetUser,
@@ -306,7 +307,7 @@ func NewWrappedServices() *WrappedServices {
 			},
 			CreateUser: func(user *User) error {
 				builder := aspect.For("UserService.CreateUser")
-				return aspect.Wrap1E[*User](
+				return wrap.Wrap1E[*User](
 					builder.GetRegistry(),
 					builder.GetFuncKey(),
 					userServiceInstance.CreateUser,
@@ -316,7 +317,7 @@ func NewWrappedServices() *WrappedServices {
 		OrderService: &WrappedOrderService{
 			CreateOrder: func(userID string, amount float64) (*Order, error) {
 				builder := aspect.For("OrderService.CreateOrder")
-				return aspect.Wrap2RE[string, float64, *Order](
+				return wrap.Wrap2RE[string, float64, *Order](
 					builder.GetRegistry(),
 					builder.GetFuncKey(),
 					orderServiceInstance.CreateOrder,
@@ -324,7 +325,7 @@ func NewWrappedServices() *WrappedServices {
 			},
 			GetOrder: func(orderID string) (*Order, error) {
 				builder := aspect.For("OrderService.GetOrder")
-				return aspect.Wrap1RE[string, *Order](
+				return wrap.Wrap1RE[string, *Order](
 					builder.GetRegistry(),
 					builder.GetFuncKey(),
 					orderServiceInstance.GetOrder,

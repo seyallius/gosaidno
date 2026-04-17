@@ -7,8 +7,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
-	"github.com/seyallius/gosaidno/docs/examples/utils"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
+	"github.com/seyallius/gosaidno/v2/docs/examples/utils"
 )
 
 // -------------------------------------------- Domain Models --------------------------------------------
@@ -200,10 +201,10 @@ func sendNotificationImpl(userID, message string) {
 // -------------------------------------------- Wrapped Functions --------------------------------------------
 
 var (
-	GetUser          = aspect.Wrap1RE(registry, "GetUser", getUserImpl)
-	CreateOrder      = aspect.Wrap2RE(registry, "CreateOrder", createOrderImpl)
-	ValidateUser     = aspect.Wrap1E(registry, "ValidateUser", validateUserImpl)
-	SendNotification = aspect.Wrap2(registry, "SendNotification", sendNotificationImpl)
+	GetUser          = wrap.Wrap1RE(registry, "GetUser", getUserImpl)
+	CreateOrder      = wrap.Wrap2RE(registry, "CreateOrder", createOrderImpl)
+	ValidateUser     = wrap.Wrap1E(registry, "ValidateUser", validateUserImpl)
+	SendNotification = wrap.Wrap2(registry, "SendNotification", sendNotificationImpl)
 )
 
 // -------------------------------------------- Examples --------------------------------------------

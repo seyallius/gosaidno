@@ -1,6 +1,6 @@
-# _gosaidsno_
+# _gosaidno_
 
-Welcome to the comprehensive documentation for _gosaidsno_, an Aspect-Oriented Programming (AOP) library for Go.
+Welcome to the comprehensive documentation for _gosaidno_, an Aspect-Oriented Programming (AOP) library for Go.
 
 ## What is AOP?
 
@@ -8,9 +8,9 @@ Aspect-Oriented Programming (AOP) is a programming paradigm that aims to increas
 
 In simpler terms, AOP helps you handle concerns that cut across multiple parts of your application (like logging, security, caching) separately from your core business logic.
 
-## Why _gosaidsno_?
+## Why _gosaidno_?
 
-Go doesn't have built-in support for annotations or aspects like Java or other languages. However, many developers still need to handle cross-cutting concerns cleanly. _gosaidsno_ provides a Go-idiomatic solution that:
+Go doesn't have built-in support for annotations or aspects like Java or other languages. However, many developers still need to handle cross-cutting concerns cleanly. _gosaidno_ provides a Go-idiomatic solution that:
 
 - Requires no code generation or build tools
 - Uses simple function wrapping instead of complex reflection
@@ -29,7 +29,7 @@ Go doesn't have built-in support for annotations or aspects like Java or other l
 
 ## Fluent API
 
-gosaidsno now includes a fluent/declarative API that makes it easy to configure advice:
+gosaidno now includes a fluent/declarative API that makes it easy to configure advice:
 
 ```go
 // Configure advice using fluent API
@@ -40,7 +40,7 @@ aspect.For("GetUser").
 
 // Then wrap your function
 builder := aspect.For("GetUser")
-getUserBusinessLogicFn := aspect.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), GetUserBusinessLogicFn)
+getUserBusinessLogicFn := wrap.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), GetUserBusinessLogicFn)
 user, err := getUserBusinessLogicFn("userId_1") // `GetUserBusinessLogicFn` will run with AOP support!
 ```
 

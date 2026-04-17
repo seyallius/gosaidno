@@ -14,4 +14,4 @@
     - [Performance Considerations](implementation/performance.md)
     - [Limitations and Trade-offs](implementation/limitations.md)
     - [Best Practices](implementation/best-practices.md)
-    - [Extending gosaidsno](implementation/extending.md)
+    - [Extending gosaidno](implementation/extending.md)

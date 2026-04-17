@@ -1,12 +1,12 @@
-# Extending gosaidsno
+# Extending gosaidno
 
-gosaidsno is designed to be extensible, allowing you to customize and extend its functionality to meet your specific needs. Understanding the extensibility points helps you adapt the library to your requirements.
+gosaidno is designed to be extensible, allowing you to customize and extend its functionality to meet your specific needs. Understanding the extensibility points helps you adapt the library to your requirements.
 
 ## Extension Points
 
 ### 1. Custom Advice Types
 
-While gosaidsno provides 5 core advice types, you can conceptually extend the system by combining existing types:
+While gosaidno provides 5 core advice types, you can conceptually extend the system by combining existing types:
 
 ```go
 // Example: Conditional advice using existing types
@@ -302,4 +302,4 @@ Consider contributing useful extensions back to the community:
 - Integration with popular libraries
 - Utility functions for common tasks
 
-The extensibility of gosaidsno allows you to adapt it to your specific requirements while maintaining the core benefits of the AOP approach.
+The extensibility of gosaidno allows you to adapt it to your specific requirements while maintaining the core benefits of the AOP approach.

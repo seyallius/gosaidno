@@ -165,7 +165,7 @@ func businessLogicImpl(args...) result {
 }
 
 // 3. Wrap functions (once, during initialization)
-var BusinessLogic = aspect.Wrap*("FunctionName", businessLogicImpl)
+var BusinessLogic = wrap.Wrap*("FunctionName", businessLogicImpl)
 
 // 4. Use normally throughout application
 func main() {

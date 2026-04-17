@@ -7,7 +7,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
 )
 
 // -------------------------------------------- Domain Models --------------------------------------------
@@ -148,17 +149,17 @@ func cancelableOperationImpl(ctx context.Context) string {
 var (
 	GetUserWithContext = func(ctx context.Context, id string) (*User, error) {
 		builder := aspect.For("GetUserWithContext")
-		return aspect.Wrap1RECtx[string, *User](builder.GetRegistry(), builder.GetFuncKey(), getUserWithContextImpl)(ctx, id)
+		return wrap.Wrap1RECtx[string, *User](builder.GetRegistry(), builder.GetFuncKey(), getUserWithContextImpl)(ctx, id)
 	}
 
 	SlowOperation = func(ctx context.Context, duration time.Duration) error {
 		builder := aspect.For("SlowOperation")
-		return aspect.Wrap1ECtx[time.Duration](builder.GetRegistry(), builder.GetFuncKey(), slowOperationImpl)(ctx, duration)
+		return wrap.Wrap1ECtx[time.Duration](builder.GetRegistry(), builder.GetFuncKey(), slowOperationImpl)(ctx, duration)
 	}
 
 	CancelableOperation = func(ctx context.Context) string {
 		builder := aspect.For("CancelableOperation")
-		return aspect.Wrap0RCtx[string](builder.GetRegistry(), builder.GetFuncKey(), cancelableOperationImpl)(ctx)
+		return wrap.Wrap0RCtx[string](builder.GetRegistry(), builder.GetFuncKey(), cancelableOperationImpl)(ctx)
 	}
 )
 

@@ -33,7 +33,7 @@ func Wrap1RE[A, R any](registry *Registry, funcKey FuncKey, fn func(A) (R, error
 
 ## Available Wrapper Functions
 
-gosaidsno provides wrapper functions for various function signatures:
+gosaidno provides wrapper functions for various function signatures:
 
 ### No Arguments
 - `Wrap0(registry *Registry, funcKey FuncKey, fn func()) func()` - No args, no returns
@@ -71,7 +71,7 @@ aspect.For("MyFunction").
 
 // Then wrap using the builder's registry and function key
 builder := aspect.For("MyFunction")
-wrappedFn := aspect.Wrap1RE[string, *User](
+wrappedFn := wrap.Wrap1RE[string, *User](
     builder.GetRegistry(),  // Get registry from builder
     builder.GetFuncKey(),   // Get function key from builder
     myOriginalFunction,

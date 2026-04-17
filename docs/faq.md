@@ -1,32 +1,32 @@
 # Frequently Asked Questions (FAQ)
 
-Find answers to common questions about gosaidsno.
+Find answers to common questions about gosaidno.
 
 ## General
 
-### Q: What is gosaidsno?
+### Q: What is gosaidno?
 
-**A:** gosaidsno is an Aspect-Oriented Programming (AOP) library for Go that allows you to modularize cross-cutting concerns like logging, authentication, caching, and error handling without cluttering your business logic. It provides a Go-idiomatic way to achieve separation of concerns without using reflection or code generation.
+**A:** gosaidno is an Aspect-Oriented Programming (AOP) library for Go that allows you to modularize cross-cutting concerns like logging, authentication, caching, and error handling without cluttering your business logic. It provides a Go-idiomatic way to achieve separation of concerns without using reflection or code generation.
 
-### Q: Why is it called gosaidsno?
+### Q: Why is it called gosaidno?
 
 **A:** The name reflects the frustration of wanting to use annotations (like in Java) but Go saying "no". It's a playful reference to the lack of built-in AOP support in Go, while providing a solution anyway.
 
-### Q: Is gosaidsno production-ready?
+### Q: Is gosaidno production-ready?
 
-**A:** Yes, gosaidsno is designed for production use. It's thread-safe, has proper error handling, and includes comprehensive tests. However, as with any library, you should evaluate it in your specific context and requirements.
+**A:** Yes, gosaidno is designed for production use. It's thread-safe, has proper error handling, and includes comprehensive tests. However, as with any library, you should evaluate it in your specific context and requirements.
 
-### Q: How does gosaidsno compare to other AOP solutions?
+### Q: How does gosaidno compare to other AOP solutions?
 
-**A:** Unlike other AOP libraries that rely on reflection or code generation, gosaidsno uses simple function wrapping with generics. This makes it faster, more type-safe, and easier to debug than reflection-based approaches.
+**A:** Unlike other AOP libraries that rely on reflection or code generation, gosaidno uses simple function wrapping with generics. This makes it faster, more type-safe, and easier to debug than reflection-based approaches.
 
 ## Usage
 
-### Q: Do I need to modify my existing functions to use gosaidsno?
+### Q: Do I need to modify my existing functions to use gosaidno?
 
-**A:** No, you don't need to modify your existing functions. You simply register them with gosaidsno and wrap them using the appropriate wrapper function. Your original business logic remains unchanged.
+**A:** No, you don't need to modify your existing functions. You simply register them with gosaidno and wrap them using the appropriate wrapper function. Your original business logic remains unchanged.
 
-### Q: Can I use gosaidsno with methods on structs?
+### Q: Can I use gosaidno with methods on structs?
 
 **A:** Yes, you can wrap methods by converting them to function values:
 
@@ -42,7 +42,7 @@ getUserFunc := func(id int) (User, error) {
     return service.GetUser(id)
 }
 
-wrappedGetUser := aspect.Wrap1RE[int, User]("UserService.GetUser", getUserFunc)
+wrappedGetUser := wrap.Wrap1RE[int, User]("UserService.GetUser", getUserFunc)
 ```
 
 ### Q: What happens if I forget to register a function?
@@ -65,19 +65,89 @@ wrappedGetUser := aspect.Wrap1RE[int, User]("UserService.GetUser", getUserFunc)
 
 **A:** Yes, advice functions can modify the context, which allows them to modify arguments (through c.Args) and return values (through c.SetResult()). Around advice can also skip the target function entirely by setting c.Skipped = true.
 
+### Q: How do I handle variadic functions?
+
+**A:** Use the slice-based variadic wrappers (`Wrap*Slice*`) which accept a `[]any` as the final parameter. For ergonomic usage, create helper functions that accept variadic arguments and convert them to a slice:
+
+```go
+// Wrap with slice variant
+wrapped := Wrap1SliceRE[int, int](registry, "Sum", sumFunc)
+
+// Create helper for cleaner syntax
+func Sum(base int, numbers ...int) (int, error) {
+    args := make([]any, len(numbers))
+    for i, n := range numbers {
+        args[i] = n
+    }
+    return wrapped(base, args)
+}
+```
+
+### Q: What's the performance difference between slice wrappers and fixed wrappers?
+
+**A:** Slice wrappers have minimal overhead:
+- **Memory**: ~24 bytes for empty slice allocation
+- **CPU**: ~50-100ns additional processing time
+- **Type assertions**: Required for extracting typed values from `[]any`
+
+For performance-critical code with known argument counts, use fixed-arity wrappers. For flexible APIs or plugin systems, slice wrappers provide excellent ergonomics with acceptable overhead.
+
+### Q: Can I mix fixed and variadic arguments?
+
+**A:** Yes! That's exactly what the slice wrappers are designed for. The fixed arguments maintain full type safety, while the final `[]any` parameter provides flexibility:
+
+```go
+// Function signature: func(userID string, amount float64, metadata []any) error
+wrapped := Wrap2SliceE[string, float64](registry, "ProcessPayment", processFunc)
+
+// Call with fixed args + variable metadata
+wrapped("user123", 99.99, []any{"currency", "USD", "source", "web"})
+```
+
+### Q: How do I access slice arguments in advice functions?
+
+**A:** The slice is passed as a single argument in `c.Args`. Access it with type assertion:
+
+```go
+Handler: func(c *aspect.Context) error {
+    // For Wrap1SliceRE: c.Args[0] is the fixed arg, c.Args[1] is the []any slice
+    fixedArg := c.Args[0].(string)
+    variadicArgs := c.Args[1].([]any)
+    
+    // Process variadic args
+    for _, arg := range variadicArgs {
+        // Handle each argument
+    }
+    return nil
+}
+```
+
+### Q: Do slice wrappers work with the fluent API?
+
+**A:** Yes! All slice wrapper variants are available through the fluent API:
+
+```go
+aspect.For("MyFunction").
+    WithBefore(myAdvice).
+    WithAfter(myAfterAdvice)
+
+builder := aspect.For("MyFunction")
+wrapped := builder.Wrap1SliceRE[string, int](myFunction)
+```
+
 ## Technical
 
-### Q: Does gosaidsno use reflection?
+### Q: Does gosaidno use reflection?
 
-**A:** No, gosaidsno does not use reflection. It relies on Go generics and function wrapping to provide type-safe AOP capabilities.
+**A:** No, gosaidno does not use reflection. It relies on Go generics and function wrapping to provide type-safe AOP capabilities.
 
-### Q: What is the performance impact of using gosaidsno?
+### Q: What is the performance impact of using gosaidno?
 
 **A:** The performance impact depends on how much advice you have attached to each function. Each piece of advice adds a small overhead (typically microseconds). For most applications, this overhead is negligible compared to the benefits of cleaner code organization.
 
-### Q: Is gosaidsno thread-safe?
+### Q: Is gosaidno thread-safe?
 
-**A:** Yes, gosaidsno is designed to be thread-safe. The registry uses appropriate synchronization mechanisms, and context objects are not shared between goroutines.
+**A:** Yes, gosaidno is designed to be thread-safe. The registry uses appropriate synchronization mechanisms, and context objects are not shared between goroutines.
 
 ### Q: How does the priority system work?
 
@@ -85,7 +155,7 @@ wrappedGetUser := aspect.Wrap1RE[int, User]("UserService.GetUser", getUserFunc)
 
 ### Q: Can I remove advice after adding it?
 
-**A:** Currently, gosaidsno doesn't provide a direct way to remove advice. However, you can clear the entire registry using `aspect.Clear()` to reset all registrations and advice.
+**A:** Currently, gosaidno doesn't provide a direct way to remove advice. However, you can clear the entire registry using `aspect.Clear()` to reset all registrations and advice.
 
 ### Q: What happens if a target function panics?
 
@@ -105,7 +175,7 @@ wrappedGetUser := aspect.Wrap1RE[int, User]("UserService.GetUser", getUserFunc)
 
 **A:** Use `MustRegister` and `MustAddAdvice` when you're certain the operations should succeed (e.g., during application startup with hardcoded function names). Use the regular versions when you need to handle errors gracefully.
 
-### Q: How do I test functions that use gosaidsno?
+### Q: How do I test functions that use gosaidno?
 
 **A:** You can test your business logic independently of the advice, and test your advice functions separately. For integration tests, you can set up the AOP configuration in your test setup and verify that the expected advice is executed.
 
@@ -113,15 +183,15 @@ wrappedGetUser := aspect.Wrap1RE[int, User]("UserService.GetUser", getUserFunc)
 
 ### Q: Are there any limitations on function signatures?
 
-**A:** gosaidsno provides wrapper functions for functions with up to 3 arguments. If you need to wrap functions with more arguments, you can create custom wrappers or refactor your functions to accept a single struct parameter.
+**A:** gosaidno provides wrapper functions for functions with up to 3 arguments. If you need to wrap functions with more arguments, you can create custom wrappers or refactor your functions to accept a single struct parameter.
 
-### Q: Can I use gosaidsno with third-party packages?
+### Q: Can I use gosaidno with third-party packages?
 
 **A:** Yes, you can wrap functions from third-party packages as long as you can reference them. Simply register and wrap the functions as you would with your own code.
 
-### Q: Does gosaidsno support async/await patterns?
+### Q: Does gosaidno support async/await patterns?
 
-**A:** Since Go doesn't have async/await, gosaidsno works with regular Go functions. You can wrap functions that return channels or work with goroutines, but the advice will execute in the calling goroutine.
+**A:** Since Go doesn't have async/await, gosaidno works with regular Go functions. You can wrap functions that return channels or work with goroutines, but the advice will execute in the calling goroutine.
 
 ## Troubleshooting
 
@@ -164,7 +234,7 @@ aspect.For("GetUser").
     WithAfter(logging)
 
 builder := aspect.For("GetUser")
-wrappedFn := aspect.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)
+wrappedFn := wrap.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)
 ```
 
 ### Q: What are the benefits of the fluent API?
@@ -195,7 +265,7 @@ aspect.ForWithRegistry(registry, "MyFunction").
 
 ## Development
 
-### Q: How can I contribute to gosaidsno?
+### Q: How can I contribute to gosaidno?
 
 **A:** Contributions are welcome! Check the CONTRIBUTING.md file for guidelines on submitting issues, pull requests, and code style. The project follows standard Go practices and welcomes improvements to documentation, examples, and functionality.
 
@@ -205,6 +275,6 @@ aspect.ForWithRegistry(registry, "MyFunction").
 
 ## License
 
-### Q: What license is gosaidsno released under?
+### Q: What license is gosaidno released under?
 
-**A:** gosaidsno is released under the MIT License. See the LICENSE file for complete licensing information.
+**A:** gosaidno is released under the MIT License. See the LICENSE file for complete licensing information.

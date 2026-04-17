@@ -7,8 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
-	"github.com/seyallius/gosaidno/docs/examples/utils"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
+	"github.com/seyallius/gosaidno/v2/docs/examples/utils"
 )
 
 // -------------------------------------------- Simple Cache --------------------------------------------
@@ -243,8 +244,8 @@ func calculateRecommendationsImpl(userID string) ([]string, error) {
 // -------------------------------------------- Wrapped Functions --------------------------------------------
 
 var (
-	FetchUserProfile         = aspect.Wrap1RE(registry, "FetchUserProfile", fetchUserProfileImpl)
-	CalculateRecommendations = aspect.Wrap1RE(registry, "CalculateRecommendations", calculateRecommendationsImpl)
+	FetchUserProfile         = wrap.Wrap1RE(registry, "FetchUserProfile", fetchUserProfileImpl)
+	CalculateRecommendations = wrap.Wrap1RE(registry, "CalculateRecommendations", calculateRecommendationsImpl)
 )
 
 // -------------------------------------------- Examples --------------------------------------------

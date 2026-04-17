@@ -1,6 +1,6 @@
 # Limitations and Trade-offs
 
-Understanding the limitations and trade-offs of gosaidsno helps you determine when it's the right tool for your use case and how to work within its constraints effectively.
+Understanding the limitations and trade-offs of gosaidno helps you determine when it's the right tool for your use case and how to work within its constraints effectively.
 
 ## Architectural Limitations
 
@@ -13,7 +13,7 @@ func (s *Service) Method(x int) string { return "result" }
 
 service := &Service{}
 methodFunc := func(x int) string { return service.Method(x) }
-wrapped := aspect.Wrap1R[int, string]("Service.Method", methodFunc)
+wrapped := wrap.Wrap1R[int, string]("Service.Method", methodFunc)
 ```
 
 ### Static Registration Requirement
@@ -126,11 +126,11 @@ Handler: func(c *aspect.Context) error {
 
 ## Alternatives for Different Needs
 
-If gosaidsno's limitations don't suit your needs, consider:
+If gosaidno's limitations don't suit your needs, consider:
 
 - **Decorator pattern**: Manual function composition for simple cases
 - **Middleware**: For HTTP handlers or similar request-response patterns
 - **Interface-based composition**: Using interfaces for dependency injection
 - **Code generation**: Tools like `go generate` for compile-time AOP
 
-Understanding these limitations and trade-offs helps you make informed decisions about when and how to use gosaidsno effectively in your applications.
+Understanding these limitations and trade-offs helps you make informed decisions about when and how to use gosaidno effectively in your applications.

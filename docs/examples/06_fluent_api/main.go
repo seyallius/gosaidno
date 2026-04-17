@@ -7,7 +7,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
 )
 
 // -------------------------------------------- Domain Models --------------------------------------------
@@ -143,18 +144,18 @@ var (
 	// Using the fluent API to wrap functions
 	GetUserFluent = func(id string) (*User, error) {
 		builder := aspect.For("GetUserFluent")
-		return aspect.Wrap1RE[string, *User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)(id)
+		return wrap.Wrap1RE[string, *User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)(id)
 	}
 
 	CreateOrderFluent = func(userID string, amount float64) (*Order, error) {
 		builder := aspect.For("CreateOrderFluent")
-		return aspect.Wrap2RE[string, float64, *Order](builder.GetRegistry(), builder.GetFuncKey(), createOrderImpl)(userID, amount)
+		return wrap.Wrap2RE[string, float64, *Order](builder.GetRegistry(), builder.GetFuncKey(), createOrderImpl)(userID, amount)
 	}
 
 	// Alternative approach: Create a helper function for cleaner usage
 	GetUserCached = func(id string) (*User, error) {
 		builder := aspect.For("GetUserCached")
-		return aspect.Wrap1RE[string, *User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)(id)
+		return wrap.Wrap1RE[string, *User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)(id)
 	}
 )
 
@@ -229,10 +230,10 @@ func wrapWithFluent[Fn any](funcName aspect.FuncKey, fn Fn) Fn {
 	// This is a simplified example - a real implementation would need more sophisticated type handling
 	switch v := any(fn).(type) {
 	case func(string) (*User, error):
-		wrapped := aspect.Wrap1RE[string, *User](registry, builder.GetFuncKey(), v)
+		wrapped := wrap.Wrap1RE[string, *User](registry, builder.GetFuncKey(), v)
 		return any(wrapped).(Fn)
 	case func(string, float64) (*Order, error):
-		wrapped := aspect.Wrap2RE[string, float64, *Order](registry, builder.GetFuncKey(), v)
+		wrapped := wrap.Wrap2RE[string, float64, *Order](registry, builder.GetFuncKey(), v)
 		return any(wrapped).(Fn)
 	default:
 		// For this example, we'll just return the original function
@@ -263,5 +264,5 @@ func main() {
 	fmt.Println("    WithBefore(authCheck).")
 	fmt.Println("    WithAfter(logging).")
 	fmt.Println("    WithAround(caching).")
-	fmt.Println("    // Then wrap with: aspect.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)")
+	fmt.Println("    // Then wrap with: wrap.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)")
 }

@@ -1,6 +1,6 @@
 # Implementation Details
 
-This section provides a deep dive into how gosaidsno is implemented internally. Understanding these details can help you use the library more effectively and make informed decisions about when and how to use it.
+This section provides a deep dive into how gosaidno is implemented internally. Understanding these details can help you use the library more effectively and make informed decisions about when and how to use it.
 
 ## Table of Contents
 
@@ -14,4 +14,4 @@ This section provides a deep dive into how gosaidsno is implemented internally. 
 - [Performance Considerations](./performance.md) - Time/space complexity and overhead
 - [Limitations and Trade-offs](./limitations.md) - What you need to know about constraints
 - [Best Practices](./best-practices.md) - How to use implementation knowledge effectively
-- [Extending gosaidsno](./extending.md) - How to customize and extend the library
+- [Extending gosaidno](./extending.md) - How to customize and extend the library

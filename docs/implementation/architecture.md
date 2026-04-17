@@ -1,6 +1,6 @@
 # Architecture Overview
 
-gosaidsno's architecture consists of interconnected components that work together to provide AOP functionality:
+gosaidno's architecture consists of interconnected components that work together to provide AOP functionality:
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐

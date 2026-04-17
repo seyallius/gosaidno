@@ -3,7 +3,7 @@ package utils
 import (
 	"log"
 
-	"github.com/seyallius/gosaidno/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect"
 )
 
 func LogBefore(c *aspect.Context, priority int, message string) {

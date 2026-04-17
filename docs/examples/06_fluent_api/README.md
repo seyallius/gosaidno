@@ -1,6 +1,6 @@
 # Fluent API Example
 
-This example demonstrates the new fluent/declarative API for configuring aspect-oriented programming in the gosaidsno library.
+This example demonstrates the new fluent/declarative API for configuring aspect-oriented programming in the gosaidno library.
 
 ## Key Features
 
@@ -22,7 +22,7 @@ aspect.For("GetUser").
 
 // Then wrap your function using the registry
 builder := aspect.For("GetUser")
-wrappedFn := aspect.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)
+wrappedFn := wrap.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)
 ```
 
 ## Benefits

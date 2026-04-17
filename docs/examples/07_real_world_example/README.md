@@ -1,6 +1,6 @@
 # Real-World Example
 
-This example demonstrates a complete real-world usage of gosaidsno with proper project structure and best practices.
+This example demonstrates a complete real-world usage of gosaidno with proper project structure and best practices.
 
 ## Key Concepts Demonstrated
 
@@ -40,7 +40,7 @@ func (us *UserService) GetUser(username string) (*User, error) {
 // Wrapped function
 UserServiceGetUser := func(username string) (*User, error) {
     builder := aspect.For("UserService.GetUser")
-    return aspect.Wrap1RE[string, *User](
+    return wrap.Wrap1RE[string, *User](
         builder.GetRegistry(), 
         builder.GetFuncKey(), 
         (&UserService{}).GetUser,
@@ -59,7 +59,7 @@ type WrappedUserService struct {
 wrappedServices := &WrappedUserService{
     GetUser: func(username string) (*User, error) {
         builder := aspect.For("UserService.GetUser")
-        return aspect.Wrap1RE[string, *User](
+        return wrap.Wrap1RE[string, *User](
             builder.GetRegistry(), 
             builder.GetFuncKey(), 
             (&UserService{}).GetUser,
@@ -85,4 +85,4 @@ wrappedServices := &WrappedUserService{
 go run docs/examples/07_real_world_example/main.go
 ```
 
-This example shows how gosaidsno can be integrated into a real application with multiple services, demonstrating the power and flexibility of the fluent API for managing complex cross-cutting concerns.
+This example shows how gosaidno can be integrated into a real application with multiple services, demonstrating the power and flexibility of the fluent API for managing complex cross-cutting concerns.

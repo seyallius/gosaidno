@@ -7,8 +7,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
-	"github.com/seyallius/gosaidno/docs/examples/utils"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
+	"github.com/seyallius/gosaidno/v2/docs/examples/utils"
 )
 
 // -------------------------------------------- Auth System --------------------------------------------
@@ -169,9 +170,9 @@ func updateSettingsImpl(token string, settings map[string]interface{}) error {
 // -------------------------------------------- Wrapped Functions --------------------------------------------
 
 var (
-	GetUserData    = aspect.Wrap2RE(registry, "GetUserData", getUserDataImpl)
-	DeleteUser     = aspect.Wrap2E(registry, "DeleteUser", deleteUserImpl)
-	UpdateSettings = aspect.Wrap2E(registry, "UpdateSettings", updateSettingsImpl)
+	GetUserData    = wrap.Wrap2RE(registry, "GetUserData", getUserDataImpl)
+	DeleteUser     = wrap.Wrap2E(registry, "DeleteUser", deleteUserImpl)
+	UpdateSettings = wrap.Wrap2E(registry, "UpdateSettings", updateSettingsImpl)
 )
 
 // -------------------------------------------- Examples --------------------------------------------

@@ -8,8 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/seyallius/gosaidno/aspect"
-	"github.com/seyallius/gosaidno/docs/examples/utils"
+	"github.com/seyallius/gosaidno/v2/aspect"
+	"github.com/seyallius/gosaidno/v2/aspect/wrap"
+	"github.com/seyallius/gosaidno/v2/docs/examples/utils"
 )
 
 // -------------------------------------------- Circuit Breaker --------------------------------------------
@@ -186,7 +187,7 @@ func callExternalServiceImpl(endpoint string) (string, error) {
 
 // -------------------------------------------- Wrapped Functions --------------------------------------------
 
-var CallExternalService = aspect.Wrap1RE(registry, "CallExternalService", callExternalServiceImpl)
+var CallExternalService = wrap.Wrap1RE(registry, "CallExternalService", callExternalServiceImpl)
 
 // -------------------------------------------- Examples --------------------------------------------
 

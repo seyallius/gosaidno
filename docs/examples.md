@@ -1,10 +1,10 @@
 # Examples
 
-This section provides real-world examples of how to use gosaidsno for various common patterns and use cases.
+This section provides real-world examples of how to use gosaidno for various common patterns and use cases.
 
 ## Available Examples
 
-The examples directory contains several complete, runnable examples demonstrating different aspects of gosaidsno:
+The examples directory contains several complete, runnable examples demonstrating different aspects of gosaidno:
 
 ### 1. Basic Usage (`examples/01_basic_usage`)
 
@@ -67,6 +67,20 @@ Demonstrates a complete real-world usage with proper project structure:
 - Proper organization of wrapped functions
 - Realistic error handling and recovery
 
+### 9. Variadic Arguments (`examples/09_variadic_example`)
+Demonstrates slice-based variadic wrappers for flexible argument handling:
+- Structured logging with variable key-value pairs
+- Math operations with variable operands and caching
+- String building with variadic parts
+- Context-aware variadic functions
+- Helper function patterns for ergonomic variadic syntax
+
+**Key patterns:**
+- Convert `...T` to `[]any` for cleaner APIs
+- Type-safe fixed arguments + flexible slice parameter
+- All advice types work with slice wrappers
+- Context propagation with variadic functions
+
 ## Running Examples
 
 You can run any example with:
@@ -111,7 +125,7 @@ func businessLogicImpl(args...) result {
 }
 
 // 3. Wrap functions (once, during initialization)
-var BusinessLogic = aspect.Wrap*("FunctionName", businessLogicImpl)
+var BusinessLogic = wrap.Wrap*("FunctionName", businessLogicImpl)
 
 // 4. Use normally throughout application
 func main() {

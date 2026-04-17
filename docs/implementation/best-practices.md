@@ -1,8 +1,8 @@
 # Best Practices
 
-Based on the implementation details, here are best practices for using gosaidsno effectively and avoiding common pitfalls.
+Based on the implementation details, here are best practices for using gosaidno effectively and avoiding common pitfalls.
 
-## When to Use gosaidsno
+## When to Use gosaidno
 
 ### Ideal Use Cases
 - **Cross-cutting concerns**: Logging, monitoring, authentication, authorization
@@ -11,7 +11,7 @@ Based on the implementation details, here are best practices for using gosaidsno
 - **Performance-critical code**: When reflection overhead matters
 - **Clean architecture**: Separating business logic from infrastructure concerns
 
-### When to Avoid gosaidsno
+### When to Avoid gosaidno
 - **Simple applications**: Overhead for basic use cases without complex cross-cutting concerns
 - **Dynamic requirements**: When advice needs to change frequently at runtime
 - **Method-heavy designs**: When most logic is in methods (requires conversion)
@@ -165,7 +165,7 @@ func BenchmarkAOPOverhead(b *testing.B) {
     aspect.MustAddAdvice("BenchmarkFunc", loggingAdvice())
     aspect.MustAddAdvice("BenchmarkFunc", timingAdvice())
     
-    wrappedFunc := aspect.Wrap0("BenchmarkFunc", func() {
+    wrappedFunc := wrap.Wrap0("BenchmarkFunc", func() {
         // Simulate actual work
         time.Sleep(time.Microsecond)
     })
@@ -217,4 +217,4 @@ func ApplyConfig(configs []AOPConfig) error {
 }
 ```
 
-Following these best practices will help you leverage gosaidsno effectively while avoiding common pitfalls and performance issues.
+Following these best practices will help you leverage gosaidno effectively while avoiding common pitfalls and performance issues.

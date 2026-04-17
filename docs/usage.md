@@ -1,15 +1,15 @@
 # Usage Guide
 
-This guide provides comprehensive information about using gosaidsno effectively in your Go applications.
+This guide provides comprehensive information about using gosaidno effectively in your Go applications.
 
 ## Core Concepts
 
 ### Function Registration
 
-Before you can apply advice to a function, you must register it with gosaidsno:
+Before you can apply advice to a function, you must register it with gosaidno:
 
 ```go
-import "github.com/seyallius/gosaidno/aspect"
+import "github.com/seyallius/gosaidno/v2/aspect"
 
 // Register a function with a unique name
 err := aspect.Register("UserService.GetUser")
@@ -22,7 +22,7 @@ Registration creates an entry in the internal registry that associates the funct
 
 ### Advice Types
 
-gosaidsno supports five distinct types of advice, each executing at different points in the function lifecycle:
+gosaidno supports five distinct types of advice, each executing at different points in the function lifecycle:
 
 #### Before Advice
 
@@ -152,88 +152,202 @@ type Context struct {
 
 ## Function Wrapping
 
-gosaidsno provides generic wrapper functions for different function signatures:
+gosaidno provides generic wrapper functions for different function signatures:
 
 ### No Arguments, No Return Values
 
 ```go
-originalFunc := func() {
-    // Your business logic
+originalFunc := func () {
+// Your business logic
 }
 
-wrappedFunc := aspect.Wrap0("MyFunc", originalFunc)
+wrappedFunc := wrap.Wrap0("MyFunc", originalFunc)
 ```
 
 ### No Arguments, One Return Value
 
 ```go
-originalFunc := func() string {
-    return "result"
+originalFunc := func () string {
+return "result"
 }
 
-wrappedFunc := aspect.Wrap0R[string]("MyFunc", originalFunc)
+wrappedFunc := wrap.Wrap0R[string]("MyFunc", originalFunc)
 ```
 
 ### No Arguments, Result and Error
 
 ```go
-originalFunc := func() (string, error) {
-    return "result", nil
+originalFunc := func () (string, error) {
+return "result", nil
 }
 
-wrappedFunc := aspect.Wrap0RE[string]("MyFunc", originalFunc)
+wrappedFunc := wrap.Wrap0RE[string]("MyFunc", originalFunc)
 ```
 
 ### One Argument, No Return Values
 
 ```go
-originalFunc := func(userID int) {
-    // Process user ID
+originalFunc := func (userID int) {
+// Process user ID
 }
 
-wrappedFunc := aspect.Wrap1[int]("MyFunc", originalFunc)
+wrappedFunc := wrap.Wrap1[int]("MyFunc", originalFunc)
 ```
 
 ### One Argument, One Return Value
 
 ```go
-originalFunc := func(userID int) string {
-    return fmt.Sprintf("user-%d", userID)
+originalFunc := func (userID int) string {
+return fmt.Sprintf("user-%d", userID)
 }
 
-wrappedFunc := aspect.Wrap1R[int, string]("MyFunc", originalFunc)
+wrappedFunc := wrap.Wrap1R[int, string]("MyFunc", originalFunc)
 ```
 
 ### One Argument, Result and Error
 
 ```go
-originalFunc := func(userID int) (string, error) {
-    if userID <= 0 {
-        return "", errors.New("invalid user ID")
-    }
-    return fmt.Sprintf("user-%d", userID), nil
+originalFunc := func (userID int) (string, error) {
+if userID <= 0 {
+return "", errors.New("invalid user ID")
+}
+return fmt.Sprintf("user-%d", userID), nil
 }
 
-wrappedFunc := aspect.Wrap1RE[int, string]("MyFunc", originalFunc)
+wrappedFunc := wrap.Wrap1RE[int, string]("MyFunc", originalFunc)
 ```
 
 ### Multiple Arguments
 
-gosaidsno supports functions with up to 3 arguments:
+gosaidno supports functions with up to 3 arguments:
 
 ```go
 // Two arguments, result and error
-wrappedFunc := aspect.Wrap2RE[string, int, User]("MyFunc",
-    func(username string, age int) (User, error) {
-        // Implementation
-    })
+wrappedFunc := wrap.Wrap2RE[string, int, User]("MyFunc",
+func (username string, age int) (User, error) {
+// Implementation
+})
 
 // Three arguments, result and error
-wrappedFunc := aspect.Wrap3RE[string, int, bool, User]("MyFunc",
-    func(username string, age int, active bool) (User, error) {
-        // Implementation
-    })
+wrappedFunc := wrap.Wrap3RE[string, int, bool, User]("MyFunc",
+func(username string, age int, active bool) (User, error) {
+// Implementation
+})
 ```
+
+## Variadic Arguments with Slices
+
+When you need to handle a dynamic number of arguments while still benefiting from AOP, gosaidno provides slice-based
+variadic wrappers. These accept a `[]any` as the final parameter, giving you flexibility similar to variadic functions.
+
+### When to Use Slice Wrappers
+
+- **Logging with variable key-value pairs**: `Log(level string, fields []any)`
+- **Math operations with variable operands**: `Sum(base int, numbers []any)`
+- **String formatting**: `Format(template string, values []any)`
+- **HTTP request builders**: `BuildRequest(method, url string, headers []any)`
+- **Plugin systems**: Where the number of parameters isn't known at compile time
+
+### Basic Example
+
+```go
+// Define a function that accepts variable arguments
+sumNumbers := func (base int, numbers []any) (int, error) {
+    sum := base
+    for _, n := range numbers {
+        if val, ok := n.(int); ok {
+            sum += val
+        }
+    }
+    return sum, nil
+}
+
+// Register and configure advice
+aspect.For("CalculateSum").
+    WithBefore(func (c *aspect.Context) error {
+        log.Printf("Summing with base: %v", c.Args[0])
+        return nil
+    }).
+    WithAfter(func (c *aspect.Context) error {
+        log.Printf("Result: %v", c.Results[0])
+        return nil
+    })
+
+// Wrap using the slice variant
+builder := aspect.For("CalculateSum")
+wrappedSum := wrap.Wrap1SliceRE[int, int](
+    builder.GetRegistry(),
+    builder.GetFuncKey(),
+    sumNumbers,
+)
+
+// Use with a slice
+result, err := wrappedSum(10, []any{20, 30, 40})
+// result = 100
+```
+
+### Creating Cleaner Syntax with Helpers
+
+For a more ergonomic API, create helper functions that accept variadic arguments:
+
+```go
+// Helper that converts ...int to []any
+func Sum(base int, numbers ...int) (int, error) {
+    args := make([]any, len(numbers))
+    for i, n := range numbers {
+        args[i] = n
+    }
+    return wrappedSum(base, args)
+}
+
+// Now users can call it naturally:
+result, _ := Sum(10, 20, 30, 40)
+```
+
+### Performance Considerations
+
+Slice wrappers have minimal overhead compared to fixed-arity wrappers:
+
+- **Memory**: One additional slice allocation per call (~24 bytes for empty slice)
+- **CPU**: ~50-100ns overhead for slice handling
+- **Type assertions**: Required when extracting typed values from `[]any`
+
+For performance-critical paths with known argument counts, prefer fixed-arity wrappers. For flexible APIs, slice
+wrappers provide excellent ergonomics with acceptable overhead.
+
+### Comparison: Fixed vs Slice Wrappers
+
+| Feature     | Fixed-Arity (`Wrap1RE`)  | Slice Variadic (`Wrap1SliceRE`)               |
+|-------------|--------------------------|-----------------------------------------------|
+| Type Safety | Full compile-time safety | Fixed args safe, slice values need assertions |
+| Flexibility | Fixed number of args     | Dynamic number of additional args             |
+| Performance | Optimal                  | Slight overhead (~100ns)                      |
+| Use Case    | Known argument count     | Variable arguments, plugin systems            |
+| Syntax      | `fn(a, b)`               | `fn(a, []any{b, c, d})`                       |
+
+### Available Slice Wrapper Functions
+
+**0 Fixed Arguments + Slice:**
+
+- `Wrap0Slice`, `Wrap0SliceR`, `Wrap0SliceE`, `Wrap0SliceRE`
+- Context variants: `Wrap0SliceCtx`, `Wrap0SliceRCtx`, `Wrap0SliceECtx`, `Wrap0SliceRECtx`
+
+**1 Fixed Argument + Slice:**
+
+- `Wrap1Slice[A]`, `Wrap1SliceR[A,R]`, `Wrap1SliceE[A]`, `Wrap1SliceRE[A,R]`
+- Context variants available for all
+
+**2 Fixed Arguments + Slice:**
+
+- `Wrap2Slice[A,B]`, `Wrap2SliceR[A,B,R]`, `Wrap2SliceE[A,B]`, `Wrap2SliceRE[A,B,R]`
+- Context variants available for all
+
+**3 Fixed Arguments + Slice:**
+
+- `Wrap3Slice[A,B,C]`, `Wrap3SliceR[A,B,C,R]`, `Wrap3SliceE[A,B,C]`, `Wrap3SliceRE[A,B,C,R]`
+- Context variants available for all
+
+All slice wrappers follow the same advice execution patterns as their fixed-arity counterparts.
 
 ## Advanced Patterns
 
@@ -352,7 +466,7 @@ Set up all your AOP configuration in one place, typically during application ini
 // aop/setup.go
 package aop
 
-import "github.com/seyallius/gosaidno/aspect"
+import "github.com/seyallius/gosaidno/v2/aspect"
 
 func Init() {
     setupLogging()
@@ -417,7 +531,7 @@ func TestLoggingAdvice(t *testing.T) {
     })
 
     // Test the wrapped function
-    wrappedFunc := aspect.Wrap0("TestFunc", func() {})
+    wrappedFunc := wrap.Wrap0("TestFunc", func() {})
     wrappedFunc()
 
     if logOutput != "Called TestFunc" {
@@ -490,7 +604,7 @@ func rateLimitingAdvice() aspect.Advice {
 
 ## Fluent API
 
-gosaidsno now includes a fluent/declarative API that provides a more convenient and readable way to configure advice:
+gosaidno now includes a fluent/declarative API that provides a more convenient and readable way to configure advice:
 
 ### Basic Usage
 
@@ -556,7 +670,7 @@ aspect.For("GetUser").
 
 // Then wrap your function using the builder
 builder := aspect.For("GetUser")
-wrappedFn := aspect.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)
+wrappedFn := wrap.Wrap1RE[string,*User](builder.GetRegistry(), builder.GetFuncKey(), getUserImpl)
 ```
 
 ### Complete Example
@@ -566,7 +680,9 @@ Here's a complete example using the fluent API:
 ```go
 package main
 
-import "github.com/seyallius/gosaidno/aspect"
+import (
+    "github.com/seyallius/gosaidno/v2/aspect"
+)
 
 func main() {
     // Configure advice using fluent API
@@ -586,7 +702,7 @@ func main() {
 
     // Wrap your function
     builder := aspect.For("GetUser")
-    wrappedGetUser := aspect.Wrap1RE[string,*User](
+    wrappedGetUser := wrap.Wrap1RE[string,*User](
         builder.GetRegistry(), 
         builder.GetFuncKey(), 
         getUserImpl,
@@ -647,4 +763,4 @@ func setupSecurity() {
 }
 ```
 
-This guide covers the essential aspects of using gosaidsno. For more specific examples, check out the [Examples](../examples/README.md) directory.
+This guide covers the essential aspects of using gosaidno. For more specific examples, check out the [Examples](../examples/README.md) directory.
