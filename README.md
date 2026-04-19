@@ -46,7 +46,7 @@ aspect.MustAddAdvice("ProcessPayment", aspect.Advice{
 })
 
 // Wrap your function
-ProcessPayment := aspect.Wrap1E[int](
+ProcessPayment := wrap.Wrap1E[int](
 	"ProcessPayment",
 	func (paymentID int) error {
         // Your business logic here
@@ -73,7 +73,7 @@ aspect.For("ProcessPayment").
 
 // Wrap your function using the builder
 builder := aspect.For("ProcessPayment")
-ProcessPayment := aspect.Wrap1E[int](
+ProcessPayment := wrap.Wrap1E[int](
     builder.GetRegistry(),
     builder.GetFuncKey(),
     func (paymentID int) error {

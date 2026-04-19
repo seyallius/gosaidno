@@ -177,4 +177,4 @@ func (fb *FluentBuilder) Wrap0ECtx(fn func(context.Context) error) func(context.
 //     WithAfter(myAfterAdvice)
 //
 // builder := aspect.For("MyFunction")
-// wrappedFn := aspect.Wrap1Ctx(builder.GetRegistry(), builder.GetFuncKey(), myFunction)
+// wrappedFn := wrap.Wrap1Ctx(builder.GetRegistry(), builder.GetFuncKey(), myFunction)

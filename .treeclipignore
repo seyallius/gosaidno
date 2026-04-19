@@ -5,14 +5,12 @@
 cert.pem
 docker-compose.yml
 Dockerfile
-go.mod
 go.sum
 TreeClip
 treeclip_temp.txt
 treeclip_temp*
 .treeclipignore
 *.txt
-***.mod
 ***.sum
 *.gitignore
 ***.lock
